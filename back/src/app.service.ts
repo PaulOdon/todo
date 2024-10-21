@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @Injectable()
-@ApiTags('task-api')
+@ApiTags('api')
 export class AppService {
   getHello(): string {
-    return 'Hello World!';
+    return 'Task API';
   }
 }

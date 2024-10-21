@@ -14,8 +14,9 @@ datasource db {
 }
 
 enum EnumTaskStatus {
-  EN_COURS
-  FAIT
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }
 
 model Task {

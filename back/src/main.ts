@@ -6,14 +6,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('My API')
+    .setTitle('Task API')
     .setDescription('API description')
     .setVersion('1.0')
     .addBearerAuth() // If you are using authentication with JWT or Bearer token
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
-  await app.listen(4004);
+  SwaggerModule.setup('api', app, document);
+  const res = await app.listen(4004);
+  if (res) console.log('App launch at port 4004');
 }
 bootstrap();
