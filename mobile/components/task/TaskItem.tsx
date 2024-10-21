@@ -7,12 +7,11 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 type TaskItemProps = {
   task?: TaskDTO;
-  onEdit: (task: TaskDTO) => void;
+  onEdit: (task: TaskDTO, isToComplete: boolean) => void;
   onDelete: (id: number) => void;
 };
 
 export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
-  const { updateOneTask } = useTaskMngt();
   return (
     <View
       style={{
@@ -24,7 +23,7 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
         borderRadius: 16,
         backgroundColor:
           task?.status === EnumTaskStatus.COMPLETED ? "#ddffdd" : "#FFFFFF",
-        minWidth: 300,
+        minWidth: 400,
         padding: 16,
       }}
     >
@@ -32,33 +31,45 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
         style={{
           width: 20,
           height: 20,
-          borderColor: "#333",
-          borderWidth: 1,
+          borderColor:
+            task?.status === EnumTaskStatus.COMPLETED ? "green" : "#333",
+          borderWidth: task?.status === EnumTaskStatus.COMPLETED ? 2 : 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 8,
+          borderRadius: 4,
         }}
-        onPress={() => {
-          updateOneTask({
-            ...task,
-            status: EnumTaskStatus.COMPLETED,
-          });
-        }}
+        onPress={() => onEdit(task as TaskDTO, true)}
       >
         {task?.status === EnumTaskStatus.COMPLETED && (
-          <Ionicons size={16} name="checkmark" />
+          <Ionicons size={16} name="checkmark" color={"green"} />
         )}
       </TouchableOpacity>
       <View style={{ display: "flex", gap: 4, width: "80%" }}>
-        <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 18,
+            textDecorationLine:
+              task?.status === EnumTaskStatus.COMPLETED
+                ? "line-through"
+                : "none",
+          }}
+        >
           {task?.name ?? "Task title"}
         </Text>
         <Text>{task?.description ?? "Task description"}</Text>
       </View>
 
-      <View>
-        <TouchableOpacity onPress={() => onEdit(task as TaskDTO)}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 4,
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity onPress={() => onEdit(task as TaskDTO, false)}>
           <Ionicons size={16} name={"pencil"} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onDelete(task?.id as number)}>

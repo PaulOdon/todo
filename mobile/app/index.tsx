@@ -1,6 +1,7 @@
 import TaskForm from "@/components/task/TaskForm";
 import TaskItem from "@/components/task/TaskItem";
 import { TaskDTO } from "@/data/dto/Task.dto";
+import { EnumTaskStatus } from "@/data/enum/EnumTaskItem";
 import { useTaskMngt } from "@/hooks/useTaskMngt";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -8,7 +9,15 @@ import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Index() {
-  const { tasks, loading, error, deleteOneTask, sortTasksById } = useTaskMngt();
+  const {
+    tasks,
+    loading,
+    error,
+    setTasks,
+    deleteOneTask,
+    loadAllTask,
+    updateOneTask,
+  } = useTaskMngt();
   const [isFormVisible, setIsFormVisible] = React.useState<boolean>(false);
   const [taskToEdit, setTaskToEdit] = React.useState<TaskDTO | null>(null);
   const [order, setOrder] = React.useState<"asc" | "desc">("asc");
@@ -18,15 +27,34 @@ export default function Index() {
     setIsFormVisible(true);
   };
 
-  const handleEdit = (task: TaskDTO) => {
-    setTaskToEdit(task);
-    setIsFormVisible(true);
+  const handleEdit = (task: TaskDTO, isToComplete: boolean) => {
+    if (isToComplete) {
+      updateOneTask({
+        ...task,
+        status: EnumTaskStatus.COMPLETED,
+      });
+      loadAllTask("id", order);
+    } else {
+      setTaskToEdit(task);
+      setIsFormVisible(true);
+    }
   };
 
   const handleCloseForm = () => {
     setIsFormVisible(false);
     setTaskToEdit(null);
+    loadAllTask("id", order);
   };
+
+  const handleSort = () => {
+    if (order === "asc") setOrder("desc");
+    else setOrder("asc");
+  };
+
+  React.useEffect(() => {
+    loadAllTask("id", order);
+  }, [order]);
+
   return (
     <View
       style={{
@@ -40,11 +68,12 @@ export default function Index() {
       {/* head */}
       <View
         style={{
-          minWidth: 300,
+          minWidth: 400,
           display: "flex",
           gap: 8,
         }}
       >
+        {/* title */}
         <Text
           style={{
             fontWeight: "bold",
@@ -54,6 +83,8 @@ export default function Index() {
         >
           Task management
         </Text>
+
+        {/* create and sort button */}
         <View
           style={{
             minWidth: 300,
@@ -72,11 +103,13 @@ export default function Index() {
               alignItems: "center",
             }}
           >
+            {/* Wrap text in a Text component */}
             <Text>Créer une tâche</Text>
             <Ionicons size={18} name="add" />
           </TouchableOpacity>
+
           <TouchableOpacity
-            onPress={() => sortTasksById(order === "asc" ? "desc" : "asc")}
+            onPress={handleSort}
             style={{
               display: "flex",
               flexDirection: "row",
@@ -85,6 +118,8 @@ export default function Index() {
             }}
           >
             <Ionicons size={18} name="swap-vertical" />
+            {/* Wrap text in a Text component */}
+            <Text>Filtrer</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -94,12 +129,14 @@ export default function Index() {
         <TaskForm task={taskToEdit || undefined} onClose={handleCloseForm} />
       )}
 
-      {/* loading */}
-      {!loading && tasks.length === 0 && !error && (
-        <Text style={{ color: "black" }}>
-          Aucune tâche créer pour le moment
-        </Text>
-      )}
+      <View>
+        {/* loading */}
+        {!loading && tasks.length === 0 && !error && (
+          <Text style={{ color: "black" }}>
+            Aucune tâche créer pour le moment
+          </Text>
+        )}
+      </View>
 
       {/* list */}
 
@@ -124,7 +161,7 @@ export default function Index() {
 
       {/* error */}
       {error && (
-        <Text style={{ color: "red" }}>Une erreur a été rencontré</Text>
+        <Text style={{ color: "red" }}>Une erreur a été rencontrée</Text>
       )}
     </View>
   );

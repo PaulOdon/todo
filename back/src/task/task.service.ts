@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TaskService {
@@ -12,8 +13,15 @@ export class TaskService {
     });
   }
 
-  findAll() {
-    return this.prisma.task.findMany();
+  findAll(
+    sortBy?: string | keyof Prisma.TaskOrderByWithRelationInput,
+    order: 'asc' | 'desc' = 'asc',
+  ) {
+    return this.prisma.task.findMany({
+      orderBy: {
+        [sortBy ?? 'id']: order,
+      },
+    });
   }
 
   findOne(id: number) {

@@ -9,9 +9,9 @@ export const useTaskMngt = () => {
 
   const { fetchAll, createOne, updateOne, deleteOne } = taskService();
 
-  function loadAllTask() {
+  function loadAllTask(sortBy?: string, order?: "asc" | "desc") {
     setLoading(true);
-    fetchAll()
+    fetchAll(sortBy, order)
       .then((res) => {
         setTasks(res);
       })
@@ -34,7 +34,6 @@ export const useTaskMngt = () => {
       })
       .finally(() => {
         setLoading(false);
-        loadAllTask();
       });
   }
 
@@ -42,8 +41,8 @@ export const useTaskMngt = () => {
     setLoading(true);
     updateOne(data)
       .then((updatedTask) => {
-        setTasks((current) => {
-          return current.map((item) =>
+        setTasks(() => {
+          return tasks.map((item) =>
             item.id === updatedTask.id ? updatedTask : item
           );
         });
@@ -53,7 +52,6 @@ export const useTaskMngt = () => {
       })
       .finally(() => {
         setLoading(false);
-        loadAllTask();
       });
   }
 
@@ -74,18 +72,6 @@ export const useTaskMngt = () => {
       });
   }
 
-  function sortTasksById(order: "asc" | "desc" = "asc") {
-    setTasks(
-      tasks.sort((a, b) => {
-        if (order === "asc") {
-          return (a.id as number) - (b.id as number);
-        } else {
-          return (b.id as number) - (a.id as number);
-        }
-      })
-    );
-  }
-
   React.useEffect(() => {
     loadAllTask();
   }, []);
@@ -100,6 +86,5 @@ export const useTaskMngt = () => {
     createOneTask,
     updateOneTask,
     deleteOneTask,
-    sortTasksById,
   };
 };

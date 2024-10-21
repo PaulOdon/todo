@@ -4,12 +4,17 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // Swagger configuration
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Task API')
     .setDescription('API description')
     .setVersion('1.0')
-    .addBearerAuth() // If you are using authentication with JWT or Bearer token
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

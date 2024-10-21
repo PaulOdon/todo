@@ -6,9 +6,16 @@ export const taskService = () => {
   const { get, post, patch, remove } = useAxios();
   const baseUrl = BASE_URL + "/task";
 
-  const fetchAll = async (): Promise<TaskDTO[]> => {
+  const fetchAll = async (
+    sortBy?: string,
+    order?: "asc" | "desc"
+  ): Promise<TaskDTO[]> => {
     try {
-      return await get(baseUrl);
+      return await get(
+        `${baseUrl}${sortBy ? "?sortBy=" + sortBy : ""}${
+          order ? "&order=" + order : ""
+        }`
+      );
     } catch (error) {
       throw new Error("Erreur lors de la récupération des tâches.");
     }

@@ -31,12 +31,8 @@ export default function TaskForm({ task, onClose }: TaskFormProps) {
         padding: 16,
         backgroundColor: "#fff",
         borderRadius: 8,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 4,
         width: "100%",
-        maxWidth: 300,
+        maxWidth: 400,
       }}
     >
       <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 16 }}>
@@ -45,23 +41,25 @@ export default function TaskForm({ task, onClose }: TaskFormProps) {
       <TextInput
         value={name}
         onChangeText={setName}
-        placeholder="Nom de la tâche"
+        placeholder="Nom"
         style={{
           borderBottomWidth: 1,
           borderColor: "#ccc",
           marginBottom: 12,
           height: 40,
+          paddingHorizontal: 4,
         }}
       />
       <TextInput
         value={description}
         onChangeText={setDescription}
-        placeholder="Description de la tâche"
+        placeholder="Description"
         style={{
           borderBottomWidth: 1,
           borderColor: "#ccc",
           marginBottom: 12,
           height: 40,
+          paddingHorizontal: 4,
         }}
       />
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
